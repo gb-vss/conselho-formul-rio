@@ -17,7 +17,7 @@
             color: #1e293b;
         }
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
         h1 {
@@ -69,6 +69,13 @@
         .row-2cols .form-group {
             flex: 1;
         }
+        .row-3cols {
+            display: flex;
+            gap: 10px;
+        }
+        .row-3cols .form-group {
+            flex: 1;
+        }
         button {
             width: 100%;
             background: #0f3b5c;
@@ -86,6 +93,39 @@
         }
         button:active {
             transform: scale(0.98);
+        }
+        .btn-secondary {
+            background: #64748b;
+            margin-top: 10px;
+        }
+        .btn-secondary:hover {
+            background: #475569;
+        }
+        .btn-remove {
+            background: #dc2626;
+            padding: 8px;
+            font-size: 0.85rem;
+            margin-top: 0;
+        }
+        .btn-remove:hover {
+            background: #b91c1c;
+        }
+        .child-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        .child-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .child-title {
+            font-weight: 600;
+            color: #0f3b5c;
         }
         .toast {
             position: fixed;
@@ -115,21 +155,30 @@
             margin-top: 12px;
             text-align: center;
         }
+        .required-field::after {
+            content: " *";
+            color: #dc2626;
+        }
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px dashed #e2e8f0;
+        }
         @media (max-width: 480px) {
             body { padding: 12px; }
             .card { padding: 16px; }
             button { padding: 14px; }
-        }
-        .required-field::after {
-            content: " *";
-            color: #dc2626;
+            .row-3cols {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Conselho Tutelar</h1>
-    <div class="subtitle">Registro de Ocorrencias</div>
+    <div class="subtitle">Registro de Ocorrencias - Multiplas Criancas</div>
 
     <div class="card">
         <form id="occurrenceForm">
@@ -144,29 +193,8 @@
             </div>
 
             <div class="form-group">
-                <label class="required-field">Nome da crianca ou adolescente</label>
-                <input type="text" id="childName" placeholder="Nome completo" required>
-            </div>
-
-            <div class="form-group">
                 <label class="required-field">Nome do responsavel</label>
                 <input type="text" id="guardian" placeholder="Nome do pai, mae ou responsavel legal" required>
-            </div>
-
-            <div class="row-2cols">
-                <div class="form-group">
-                    <label class="required-field">Idade (0-17)</label>
-                    <input type="number" id="age" placeholder="0-17" min="0" max="17" required>
-                </div>
-                <div class="form-group">
-                    <label class="required-field">Sexo</label>
-                    <select id="gender" required>
-                        <option value="">Selecione</option>
-                        <option>Feminino</option>
-                        <option>Masculino</option>
-                        <option>Nao informado</option>
-                    </select>
-                </div>
             </div>
 
             <div class="form-group">
@@ -210,10 +238,46 @@
                 <textarea id="notes" rows="3" placeholder="Informacoes complementares sobre a ocorrencia..."></textarea>
             </div>
 
+            <hr>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <label style="margin-bottom: 0;">Criancas envolvidas</label>
+                <button type="button" id="addChildBtn" class="btn-secondary" style="width: auto; padding: 8px 16px;">+ Adicionar crianca</button>
+            </div>
+
+            <div id="childrenContainer">
+                <div class="child-card" data-child-index="0">
+                    <div class="child-header">
+                        <span class="child-title">Crianca 1</span>
+                        <button type="button" class="btn-remove remove-child" style="width: auto; padding: 4px 12px;">Remover</button>
+                    </div>
+                    <div class="row-3cols">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input type="text" class="child-name" placeholder="Nome completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Idade (0-17)</label>
+                            <input type="number" class="child-age" placeholder="Idade" min="0" max="17" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sexo</label>
+                            <select class="child-gender" required>
+                                <option value="">Selecione</option>
+                                <option>Feminino</option>
+                                <option>Masculino</option>
+                                <option>Nao informado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <button type="submit">Registrar ocorrencia</button>
         </form>
         <div class="info-note">
-            Dados internos - Relatorios disponiveis na aba Dashboard da planilha
+            Dados internos - Relatorios disponiveis na aba Dashboard da planilha<br>
+            Para multiplas criancas, clique em "Adicionar crianca"
         </div>
     </div>
 </div>
@@ -221,11 +285,16 @@
 
 <script>
     // Configuracao com o seu NOVO ID do Apps Script
-    const SCRIPT_ID = 'AKfycbw2IoDmsTGH7-u3cKZuvkTIxun2T7py5sD2S9CtxjlryFRIbVoT0GBb8LqL8PxDeMvPUg';
+    const SCRIPT_ID = 'AKfycbw_zR_hMlONozbHQHuE1AGQ3zYcfH3x2cn9qtZpgLEI7gGFTTu-3Z6xkfVQz42Ultg-EA';
     const GOOGLE_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
 
     const form = document.getElementById('occurrenceForm');
     const toast = document.getElementById('toast');
+    const childrenContainer = document.getElementById('childrenContainer');
+    const addChildBtn = document.getElementById('addChildBtn');
+
+    let childCount = 1;
+    const MAX_CHILDREN = 5;
 
     // Preenche data atual automaticamente
     document.getElementById('date').valueAsDate = new Date();
@@ -235,6 +304,126 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
+
+    function getChildrenData() {
+        const children = [];
+        const childCards = document.querySelectorAll('.child-card');
+        
+        for (let card of childCards) {
+            const name = card.querySelector('.child-name').value.trim();
+            const age = card.querySelector('.child-age').value;
+            const gender = card.querySelector('.child-gender').value;
+            
+            if (name && age && gender) {
+                children.push({ name, age, gender });
+            }
+        }
+        
+        return children;
+    }
+
+    function validateChildren() {
+        const children = getChildrenData();
+        
+        if (children.length === 0) {
+            showMessage('Adicione pelo menos uma crianca', true);
+            return false;
+        }
+        
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            if (!child.name) {
+                showMessage(`Digite o nome da crianca ${i + 1}`, true);
+                return false;
+            }
+            if (!child.age || child.age < 0 || child.age > 17) {
+                showMessage(`Informe uma idade valida (0-17) para a crianca ${i + 1}`, true);
+                return false;
+            }
+            if (!child.gender) {
+                showMessage(`Selecione o sexo para a crianca ${i + 1}`, true);
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    function addChild() {
+        if (childCount >= MAX_CHILDREN) {
+            showMessage(`Maximo de ${MAX_CHILDREN} criancas por ocorrencia`, true);
+            return;
+        }
+        
+        const newIndex = childCount;
+        const newChildCard = document.createElement('div');
+        newChildCard.className = 'child-card';
+        newChildCard.setAttribute('data-child-index', newIndex);
+        newChildCard.innerHTML = `
+            <div class="child-header">
+                <span class="child-title">Crianca ${newIndex + 1}</span>
+                <button type="button" class="btn-remove remove-child" style="width: auto; padding: 4px 12px;">Remover</button>
+            </div>
+            <div class="row-3cols">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" class="child-name" placeholder="Nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label>Idade (0-17)</label>
+                    <input type="number" class="child-age" placeholder="Idade" min="0" max="17" required>
+                </div>
+                <div class="form-group">
+                    <label>Sexo</label>
+                    <select class="child-gender" required>
+                        <option value="">Selecione</option>
+                        <option>Feminino</option>
+                        <option>Masculino</option>
+                        <option>Nao informado</option>
+                    </select>
+                </div>
+            </div>
+        `;
+        
+        childrenContainer.appendChild(newChildCard);
+        childCount++;
+        
+        // Adiciona evento de remover ao novo botao
+        const removeBtn = newChildCard.querySelector('.remove-child');
+        removeBtn.addEventListener('click', function() {
+            removeChild(newChildCard);
+        });
+    }
+
+    function removeChild(childCard) {
+        if (document.querySelectorAll('.child-card').length <= 1) {
+            showMessage('Deve haver pelo menos uma crianca no atendimento', true);
+            return;
+        }
+        childCard.remove();
+        
+        // Reorganiza os indices e titulos
+        const remainingCards = document.querySelectorAll('.child-card');
+        for (let i = 0; i < remainingCards.length; i++) {
+            const title = remainingCards[i].querySelector('.child-title');
+            title.textContent = `Crianca ${i + 1}`;
+        }
+        childCount = remainingCards.length;
+    }
+
+    // Adiciona evento para os botoes de remover existentes
+    function initRemoveButtons() {
+        const removeButtons = document.querySelectorAll('.remove-child');
+        removeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const childCard = this.closest('.child-card');
+                removeChild(childCard);
+            });
+        });
+    }
+
+    addChildBtn.addEventListener('click', addChild);
+    initRemoveButtons();
 
     async function submitToGoogleSheets(formData) {
         try {
@@ -254,49 +443,51 @@
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const formData = {
-            action: 'addRecord',
-            timestamp: new Date().toISOString(),
-            date: document.getElementById('date').value,
-            counselor: document.getElementById('counselor').value.trim(),
-            childName: document.getElementById('childName').value.trim(),
-            guardian: document.getElementById('guardian').value.trim(),
-            age: document.getElementById('age').value,
-            gender: document.getElementById('gender').value,
-            occurrenceType: document.getElementById('occurrenceType').value,
-            notes: document.getElementById('notes').value.trim() || ''
-        };
-
-        // Validacao
-        if (!formData.counselor) {
+        // Validacoes basicas
+        const counselor = document.getElementById('counselor').value.trim();
+        const guardian = document.getElementById('guardian').value.trim();
+        const occurrenceType = document.getElementById('occurrenceType').value;
+        
+        if (!counselor) {
             showMessage('Digite o nome do conselheiro responsavel', true);
             return;
         }
         
-        if (!formData.childName) {
-            showMessage('Digite o nome da crianca ou adolescente', true);
-            return;
-        }
-        
-        if (!formData.guardian) {
+        if (!guardian) {
             showMessage('Digite o nome do responsavel', true);
             return;
         }
         
-        if (!formData.age || formData.age < 0 || formData.age > 17) {
-            showMessage('Informe uma idade valida (0 a 17 anos)', true);
-            return;
-        }
-        
-        if (!formData.gender) {
-            showMessage('Selecione o sexo', true);
-            return;
-        }
-        
-        if (!formData.occurrenceType) {
+        if (!occurrenceType) {
             showMessage('Selecione o tipo de ocorrencia', true);
             return;
         }
+        
+        if (!validateChildren()) {
+            return;
+        }
+        
+        const children = getChildrenData();
+        
+        // Monta os dados para enviar
+        const formData = {
+            action: 'addRecord',
+            timestamp: new Date().toISOString(),
+            date: document.getElementById('date').value,
+            counselor: counselor,
+            guardian: guardian,
+            occurrenceType: occurrenceType,
+            notes: document.getElementById('notes').value.trim() || '',
+            childrenCount: children.length,
+            children: JSON.stringify(children)
+        };
+        
+        // Adiciona cada crianca como campo individual
+        children.forEach((child, index) => {
+            formData[`child_${index}_name`] = child.name;
+            formData[`child_${index}_age`] = child.age;
+            formData[`child_${index}_gender`] = child.gender;
+        });
 
         const success = await submitToGoogleSheets(formData);
         
@@ -305,6 +496,20 @@
             form.reset();
             document.getElementById('date').valueAsDate = new Date();
             document.getElementById('notes').value = '';
+            
+            // Reseta para apenas uma crianca
+            while (document.querySelectorAll('.child-card').length > 1) {
+                const lastCard = document.querySelectorAll('.child-card')[document.querySelectorAll('.child-card').length - 1];
+                lastCard.remove();
+            }
+            
+            // Limpa os campos da primeira crianca
+            const firstCard = document.querySelector('.child-card');
+            firstCard.querySelector('.child-name').value = '';
+            firstCard.querySelector('.child-age').value = '';
+            firstCard.querySelector('.child-gender').value = '';
+            
+            childCount = 1;
         } else {
             showMessage('Erro ao registrar. Verifique sua conexao.', true);
         }
