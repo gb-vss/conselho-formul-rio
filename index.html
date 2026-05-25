@@ -148,6 +148,11 @@
                 <input type="text" id="childName" placeholder="Nome completo" required>
             </div>
 
+            <div class="form-group">
+                <label class="required-field">Nome do responsavel</label>
+                <input type="text" id="guardian" placeholder="Nome do pai, mae ou responsavel legal" required>
+            </div>
+
             <div class="row-2cols">
                 <div class="form-group">
                     <label class="required-field">Idade (0-17)</label>
@@ -182,7 +187,7 @@
                     </optgroup>
                     <optgroup label="Convivio familiar">
                         <option>Conflito familiar</option>
-                        <option>Abrigamento</option>
+                        <option>Acolhimento</option>
                         <option>Guarda irregular</option>
                         <option>Alienacao parental</option>
                     </optgroup>
@@ -211,7 +216,7 @@
 
 <script>
     // Configuracao com o seu NOVO ID do Apps Script
-    const SCRIPT_ID = 'AKfycbwrfQ34WQBvVpprpwh1pTZQgXBwyAiY-YdRm_mgTmWsnYAuYMXbZRPoM4WTck_lEEGmfQ';
+    const SCRIPT_ID = 'AKfycbw2IoDmsTGH7-u3cKZuvkTIxun2T7py5sD2S9CtxjlryFRIbVoT0GBb8LqL8PxDeMvPUg';
     const GOOGLE_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
 
     const form = document.getElementById('occurrenceForm');
@@ -250,6 +255,7 @@
             date: document.getElementById('date').value,
             counselor: document.getElementById('counselor').value.trim(),
             childName: document.getElementById('childName').value.trim(),
+            guardian: document.getElementById('guardian').value.trim(),
             age: document.getElementById('age').value,
             gender: document.getElementById('gender').value,
             occurrenceType: document.getElementById('occurrenceType').value,
@@ -264,6 +270,11 @@
         
         if (!formData.childName) {
             showMessage('Digite o nome da crianca ou adolescente', true);
+            return;
+        }
+        
+        if (!formData.guardian) {
+            showMessage('Digite o nome do responsavel', true);
             return;
         }
         
