@@ -340,7 +340,7 @@
 
 <script>
     // Configuracao com o seu NOVO ID do Apps Script
-    const SCRIPT_ID = 'AKfycbyNg9M9EA5osJkc2UoEFgroasZWG6m9jWMwMC8aoT2pOv0z2dnU7xww5EgEMhrlXV2YLw';
+    const SCRIPT_ID = 'AKfycbxQECSORPtiSlYL40WufLqf2X0T4DF31nvBp4QElRlLtf4D8GopgeoQZ3DbuDGeIFJSXQ';
     const GOOGLE_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
 
     const form = document.getElementById('occurrenceForm');
@@ -723,11 +723,11 @@
                             <tbody>
                                 ${children.map((child, index) => `
                                     <tr>
-                                        <td>${index + 1}</td>
-                                        <td>${child.name}</td>
-                                        <td>${child.age} anos</td>
-                                        <td>${child.gender}</td>
-                                        <td>${child.birthdate ? formatDateBR(child.birthdate) : 'Nao informada'}</td>
+                                        <td>${index + 1}</td
+                                        <td>${child.name}</td
+                                        <td>${child.age} anos</td
+                                        <td>${child.gender}</td
+                                        <td>${child.birthdate ? formatDateBR(child.birthdate) : 'Nao informada'}</td
                                     </tr>
                                 `).join('')}
                             </tbody>
