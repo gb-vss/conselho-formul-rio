@@ -214,9 +214,9 @@
             </div>
 
             <div class="form-group">
-                <label class="required-field">Grau de parentesco</label>
-                <select id="kinship" required>
-                    <option value="">Selecione</option>
+                <label>Grau de parentesco</label>
+                <select id="kinship">
+                    <option value="">Selecione (opcional)</option>
                     <option>Pai</option>
                     <option>Mae</option>
                     <option>Avô</option>
@@ -340,7 +340,7 @@
 
 <script>
     // Configuracao com o seu NOVO ID do Apps Script
-    const SCRIPT_ID = 'AKfycbz6XEIsAI1QRK91zbUFB7UazsNf7CHgBSxCjjALku3xGR6xfCntuJCTwzP0MeGpFULkTA';
+    const SCRIPT_ID = 'AKfycbyNg9M9EA5osJkc2UoEFgroasZWG6m9jWMwMC8aoT2pOv0z2dnU7xww5EgEMhrlXV2YLw';
     const GOOGLE_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
 
     const form = document.getElementById('occurrenceForm');
@@ -514,10 +514,6 @@
         }
         if (!guardian) {
             showMessage('Digite o nome do responsavel para gerar o PDF', true);
-            return;
-        }
-        if (!kinship) {
-            showMessage('Selecione o grau de parentesco para gerar o PDF', true);
             return;
         }
         if (children.length === 0) {
@@ -702,7 +698,7 @@
                         </div>
                         <div class="field-row">
                             <div class="field-label">Grau de parentesco:</div>
-                            <div class="field-value">${kinship}</div>
+                            <div class="field-value">${kinship || 'Nao informado'}</div>
                         </div>
                         <div class="field-row">
                             <div class="field-label">Data de nascimento:</div>
@@ -827,11 +823,6 @@
         
         if (!guardian) {
             showMessage('Digite o nome do responsavel', true);
-            return;
-        }
-        
-        if (!kinship) {
-            showMessage('Selecione o grau de parentesco', true);
             return;
         }
         
