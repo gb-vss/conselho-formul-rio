@@ -183,36 +183,6 @@
                 gap: 15px;
             }
         }
-        
-        /* Estilos para impressão do PDF */
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
-            }
-            .card {
-                box-shadow: none;
-                padding: 0;
-                margin: 0;
-            }
-            .btn-group, .info-note, .toast, .btn-secondary, .btn-pdf, button[type="submit"] {
-                display: none !important;
-            }
-            input, select, textarea {
-                border: none;
-                padding: 2px 0;
-                background: transparent;
-            }
-            .child-card {
-                background: transparent;
-                border: 1px solid #ccc;
-                page-break-inside: avoid;
-            }
-            .form-group {
-                page-break-inside: avoid;
-            }
-        }
     </style>
 </head>
 <body>
@@ -227,14 +197,37 @@
                 <input type="date" id="date" required>
             </div>
 
-            <div class="form-group">
-                <label class="required-field">Conselheiro responsavel</label>
-                <input type="text" id="counselor" placeholder="Digite o nome completo do conselheiro" required>
+            <div class="row-2cols">
+                <div class="form-group">
+                    <label class="required-field">Conselheiro 1</label>
+                    <input type="text" id="counselor1" placeholder="Nome do primeiro conselheiro" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Conselheiro 2</label>
+                    <input type="text" id="counselor2" placeholder="Nome do segundo conselheiro" required>
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="required-field">Nome do responsavel</label>
                 <input type="text" id="guardian" placeholder="Nome do pai, mae ou responsavel legal" required>
+            </div>
+
+            <div class="form-group">
+                <label class="required-field">Grau de parentesco</label>
+                <select id="kinship" required>
+                    <option value="">Selecione</option>
+                    <option>Pai</option>
+                    <option>Mae</option>
+                    <option>Avô</option>
+                    <option>Avó</option>
+                    <option>Tio</option>
+                    <option>Tia</option>
+                    <option>Irmão</option>
+                    <option>Irmã</option>
+                    <option>Tutor legal</option>
+                    <option>Outro</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -347,7 +340,7 @@
 
 <script>
     // Configuracao com o seu NOVO ID do Apps Script
-    const SCRIPT_ID = 'AKfycbx9axjquomwxs_1PoFo5V-9O4FLBU_0i6x7-7jT_6ODrLV3unep5Pcg0DUKRaEsrNhweA';
+    const SCRIPT_ID = 'AKfycbz6XEIsAI1QRK91zbUFB7UazsNf7CHgBSxCjjALku3xGR6xfCntuJCTwzP0MeGpFULkTA';
     const GOOGLE_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
 
     const form = document.getElementById('occurrenceForm');
@@ -499,8 +492,10 @@
     function generatePDF() {
         // Coleta todos os dados do formulario
         const date = document.getElementById('date').value;
-        const counselor = document.getElementById('counselor').value.trim();
+        const counselor1 = document.getElementById('counselor1').value.trim();
+        const counselor2 = document.getElementById('counselor2').value.trim();
         const guardian = document.getElementById('guardian').value.trim();
+        const kinship = document.getElementById('kinship').value;
         const guardianBirthDate = document.getElementById('guardianBirthDate').value;
         const address = document.getElementById('address').value.trim();
         const phone = document.getElementById('phone').value.trim();
@@ -509,12 +504,20 @@
         const children = getChildrenData();
 
         // Validacoes basicas para o PDF
-        if (!counselor) {
-            showMessage('Digite o nome do conselheiro para gerar o PDF', true);
+        if (!counselor1) {
+            showMessage('Digite o nome do primeiro conselheiro para gerar o PDF', true);
+            return;
+        }
+        if (!counselor2) {
+            showMessage('Digite o nome do segundo conselheiro para gerar o PDF', true);
             return;
         }
         if (!guardian) {
             showMessage('Digite o nome do responsavel para gerar o PDF', true);
+            return;
+        }
+        if (!kinship) {
+            showMessage('Selecione o grau de parentesco para gerar o PDF', true);
             return;
         }
         if (children.length === 0) {
@@ -638,9 +641,11 @@
                         display: flex;
                         justify-content: space-between;
                         page-break-inside: avoid;
+                        flex-wrap: wrap;
+                        gap: 20px;
                     }
                     .signature {
-                        width: 220px;
+                        width: 200px;
                         text-align: center;
                         font-size: 10px;
                     }
@@ -654,9 +659,6 @@
                         body {
                             padding: 0;
                             margin: 0;
-                        }
-                        .no-print {
-                            display: none;
                         }
                     }
                 </style>
@@ -679,8 +681,12 @@
                             <div class="field-value">${formatDateBR(date)}</div>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Conselheiro responsavel:</div>
-                            <div class="field-value">${counselor}</div>
+                            <div class="field-label">Conselheiro 1:</div>
+                            <div class="field-value">${counselor1}</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-label">Conselheiro 2:</div>
+                            <div class="field-value">${counselor2}</div>
                         </div>
                         <div class="field-row">
                             <div class="field-label">Tipo de ocorrencia:</div>
@@ -693,6 +699,10 @@
                         <div class="field-row">
                             <div class="field-label">Nome completo:</div>
                             <div class="field-value">${guardian}</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-label">Grau de parentesco:</div>
+                            <div class="field-value">${kinship}</div>
                         </div>
                         <div class="field-row">
                             <div class="field-label">Data de nascimento:</div>
@@ -740,8 +750,13 @@
                     <div class="signature-area">
                         <div class="signature">
                             <div class="signature-line"></div>
-                            <p>Conselheiro(a) responsavel</p>
-                            <p style="font-size: 9px; margin-top: 5px;">${counselor}</p>
+                            <p>Conselheiro(a) 1</p>
+                            <p style="font-size: 9px; margin-top: 5px;">${counselor1}</p>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <p>Conselheiro(a) 2</p>
+                            <p style="font-size: 9px; margin-top: 5px;">${counselor2}</p>
                         </div>
                         <div class="signature">
                             <div class="signature-line"></div>
@@ -791,20 +806,32 @@
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const counselor = document.getElementById('counselor').value.trim();
+        const counselor1 = document.getElementById('counselor1').value.trim();
+        const counselor2 = document.getElementById('counselor2').value.trim();
         const guardian = document.getElementById('guardian').value.trim();
+        const kinship = document.getElementById('kinship').value;
         const guardianBirthDate = document.getElementById('guardianBirthDate').value;
         const address = document.getElementById('address').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const occurrenceType = document.getElementById('occurrenceType').value;
         
-        if (!counselor) {
-            showMessage('Digite o nome do conselheiro responsavel', true);
+        if (!counselor1) {
+            showMessage('Digite o nome do primeiro conselheiro', true);
+            return;
+        }
+        
+        if (!counselor2) {
+            showMessage('Digite o nome do segundo conselheiro', true);
             return;
         }
         
         if (!guardian) {
             showMessage('Digite o nome do responsavel', true);
+            return;
+        }
+        
+        if (!kinship) {
+            showMessage('Selecione o grau de parentesco', true);
             return;
         }
         
@@ -823,8 +850,10 @@
             action: 'addRecord',
             timestamp: new Date().toISOString(),
             date: document.getElementById('date').value,
-            counselor: counselor,
+            counselor1: counselor1,
+            counselor2: counselor2,
             guardian: guardian,
+            kinship: kinship,
             guardianBirthDate: guardianBirthDate,
             address: address,
             phone: phone,
